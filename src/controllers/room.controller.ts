@@ -149,3 +149,23 @@ export const getLatesRoomChat = async (req: Request, res: Response) => {
         )
     }
 }
+
+export const getRoomByTitle = async (req: Request, res: Response) => {
+    try{
+        const { title } = req.params;
+        const rooms = await prisma.room.findMany({
+            where: {
+                title: {
+                    contains: title,
+                }
+            },
+        });
+        res.status(200).json(successResponse(rooms));
+    } catch (error) {
+        const errMessage = error instanceof Error ? error.message : "An unknown error occurred";
+        console.error(errMessage)
+        res.status(500).json(
+            errorResponse(500, 'Internal Server Error', error, errMessage)
+        )
+    }
+}
